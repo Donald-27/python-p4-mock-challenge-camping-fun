@@ -24,11 +24,11 @@ class Activity(db.Model, SerializerMixin):
     name = db.Column(db.String)
     difficulty = db.Column(db.Integer)
 
-    # Add relationship
+    #relationship
     signups = relationship('Signup', backref='activity', cascade='all, delete-orphan')
     campers = association_proxy('signups', 'camper')
 
-    # Add serialization rules
+    #serialization rules
     serialize_rules = ('-signups.activity',)
 
     def __repr__(self):
@@ -42,14 +42,14 @@ class Camper(db.Model, SerializerMixin):
     name = db.Column(db.String, nullable=False)
     age = db.Column(db.Integer)
 
-    # Add relationship
+    #relationship
     signups = relationship('Signup', backref='camper', cascade='all, delete-orphan')
     activities = association_proxy('signups', 'activity')
 
-    # Add serialization rules
+    #serialization rules
     serialize_rules = ('-signups.camper',)
 
-    # Add validation
+    #validation
     @validates('name')
     def validate_name(self, key, value):
         if not value or value.strip() == '':
@@ -72,14 +72,14 @@ class Signup(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     time = db.Column(db.Integer)
 
-    # Add relationships
+    #relationships
     camper_id = db.Column(db.Integer, db.ForeignKey('campers.id'), nullable=False)
     activity_id = db.Column(db.Integer, db.ForeignKey('activities.id'), nullable=False)
 
-    # Add serialization rules
+    #serialization rules
     serialize_rules = ('-camper.signups', '-activity.signups')
 
-    # Add validation
+    #validation
     @validates('time')
     def validate_time(self, key, value):
         if not (0 <= value <= 23):
